@@ -91,8 +91,7 @@ export class ListAttributeComponent implements OnInit {
 
   listAttributes(page = 1) {
     this.attributesService.listAttributes(page, this.search).subscribe((resp: any) => {
-      console.log(resp);
-      this.attributes = resp.attributes;
+      this.attributes = resp.attributes.data ?? resp.attributes;
       this.totalPages = resp.total;
       this.currentPage = page;
     })

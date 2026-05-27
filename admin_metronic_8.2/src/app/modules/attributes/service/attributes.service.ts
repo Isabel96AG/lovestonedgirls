@@ -22,7 +22,7 @@ export class AttributesService {
   }
 
   private headers() {
-    return new HttpHeaders({ 'Authorization': 'Bearer ' + this.authservice.token });
+    return new HttpHeaders({ 'Authorization': 'Bearer ' + localStorage.getItem('token') });
   }
 
   listAttributes(page: number = 1, search: string = '') {
@@ -44,7 +44,7 @@ export class AttributesService {
   updateAttribute(attribute_id: string, data: any) {
     this.isLoadingSubject.next(true);
     const URL = URL_SERVICIOS + '/admin/attributes/' + attribute_id;
-    return this.http.post(URL, data, { headers: this.headers() }).pipe(
+    return this.http.put(URL, data, { headers: this.headers() }).pipe(
       finalize(() => this.isLoadingSubject.next(false))
     );
   }

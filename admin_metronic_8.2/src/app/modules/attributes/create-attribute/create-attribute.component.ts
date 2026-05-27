@@ -45,7 +45,7 @@ export class CreateAttributeComponent implements OnInit {
           return;
         }
         this.toastr.success('Atributo creado correctamente', 'Éxito');
-        this.AttributeC.emit(resp.attribute);
+        this.AttributeC.emit(resp.attributes);
         this.modal.close(true);
       },
       error: () => {
