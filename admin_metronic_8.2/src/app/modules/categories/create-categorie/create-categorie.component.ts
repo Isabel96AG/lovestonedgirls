@@ -102,13 +102,19 @@ export class CreateCategorieComponent implements OnInit {
       formData.append("categorie_third_id", this.categorie_third_id);
     }
 
-    this.categorieService.createCategories(formData).subscribe((resp: any) => {
-      if (resp.message == 403) {
-        this.toastr.error("Error", "Ya existe una categoría con ese nombre");
-        return;
+    this.categorieService.createCategories(formData).subscribe({
+      next: (resp: any) => {
+        if (resp.message == 403) {
+          this.toastr.error("Error", "Ya existe una categoría con ese nombre");
+          return;
+        }
+        this.toastr.success("Éxito", "Categoría creada correctamente");
+        this.resetForm();
+      },
+      error: (err: any) => {
+        console.error('Error al guardar categoría:', err);
+        this.toastr.error("Error " + (err?.status || ''), err?.error?.message || 'No se pudo guardar la categoría');
       }
-      this.toastr.success("Éxito", "Categoría creada correctamente");
-      this.resetForm();
     });
   }
 
