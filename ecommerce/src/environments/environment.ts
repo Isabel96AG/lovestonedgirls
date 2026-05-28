@@ -1,5 +1,5 @@
 export const environment = {
-  URL_BACKEND:'http://api.lovestonedgirls.dam/',
-  URL_SERVICIOS:'http://api.lovestonedgirls.dam/api',
-  URL_FRONTED:'http://lovestonedgirls.dam'
+  URL_BACKEND:'http://api.lovestonedgirls.daw/',
+  URL_SERVICIOS:'http://api.lovestonedgirls.daw/api',
+  URL_FRONTED:'http://lovestonedgirls.daw'
 };

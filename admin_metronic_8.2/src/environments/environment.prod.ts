@@ -156,9 +156,9 @@ export const environment = {
       'thumbnail': './assets/media/demos/demo20.png'
     },
   },
-  URL_BACKEND:'http://api.lovestonedgirls.dam/',
-  URL_SERVICIOS:'http://api.lovestonedgirls.dam/api',
-  URL_FRONTED:'http://admin.lovestonedgirls.dam'
+  URL_BACKEND:'http://api.lovestonedgirls.daw/',
+  URL_SERVICIOS:'http://api.lovestonedgirls.daw/api',
+  URL_FRONTED:'http://admin.lovestonedgirls.daw'
   
 };
 
