@@ -1,0 +1,47 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce_2024
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app
+
+  api:
+    build: ./api_ecommerce
+    depends_on:
+      - db
+    networks:
+      - app
+
+  ecommerce:
+    build: ./ecommerce
+    networks:
+      - app
+
+  admin:
+    build: ./admin_metronic_8.2
+    networks:
+      - app
+
+  proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+      - ecommerce
+      - admin
+    networks:
+      - app
+
+volumes:
+  db_data:
+
+networks:
+  app:
