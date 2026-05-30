@@ -8,7 +8,6 @@ import { URL_SERVICIOS } from '../config/config';
 })
 export class CartService {
 
-  // número de items en el carrito (para el contador del header)
   private totalItems = new BehaviorSubject<number>(0);
   totalItems$ = this.totalItems.asObservable();
 
@@ -39,7 +38,6 @@ export class CartService {
     return this.http.delete(URL_SERVICIOS + '/ecommerce/carts/delete_all', { headers: this.headers() });
   }
 
-  // actualiza el contador del header
   setTotalItems(n: number) {
     this.totalItems.next(n);
   }

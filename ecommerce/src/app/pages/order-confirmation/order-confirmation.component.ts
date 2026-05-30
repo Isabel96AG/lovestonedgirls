@@ -21,7 +21,6 @@ export class OrderConfirmationComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // recogemos el id del pedido de la URL
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.saleService.getSale(id).subscribe({
       next: (resp: any) => {

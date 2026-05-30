@@ -19,8 +19,6 @@ export class RegisterComponent {
   email: string = '';
   password: string = '';
   phone: string = '';
-
-  // objeto para guardar los mensajes de error de cada campo
   errores: any = {};
 
   constructor(
@@ -29,25 +27,21 @@ export class RegisterComponent {
     private toastr: ToastrService,
   ) {}
 
-  // limpiamos errores y comprobamos cada campo uno a uno
   validar(): boolean {
     this.errores = {};
 
-    // comprobamos que el nombre no esté vacío y tenga al menos 2 caracteres
     if (!this.name.trim()) {
       this.errores.name = 'El nombre es obligatorio';
     } else if (this.name.trim().length < 2) {
       this.errores.name = 'El nombre debe tener al menos 2 caracteres';
     }
 
-    // comprobamos el apellido igual que el nombre
     if (!this.surname.trim()) {
       this.errores.surname = 'El apellido es obligatorio';
     } else if (this.surname.trim().length < 2) {
       this.errores.surname = 'El apellido debe tener al menos 2 caracteres';
     }
 
-    // comprobamos el email y su formato con regex
     if (!this.email.trim()) {
       this.errores.email = 'El email es obligatorio';
     } else {
@@ -57,7 +51,6 @@ export class RegisterComponent {
       }
     }
 
-    // el teléfono debe tener exactamente 9 dígitos numéricos
     if (!this.phone.trim()) {
       this.errores.phone = 'El teléfono es obligatorio';
     } else {
@@ -67,19 +60,16 @@ export class RegisterComponent {
       }
     }
 
-    // la contraseña debe tener al menos 8 caracteres
     if (!this.password) {
       this.errores.password = 'La contraseña es obligatoria';
     } else if (this.password.length < 8) {
       this.errores.password = 'La contraseña debe tener al menos 8 caracteres';
     }
 
-    // si no hay ningún error el formulario es válido
     return Object.keys(this.errores).length === 0;
   }
 
   register() {
-    // primero validamos el formulario antes de enviar
     if (!this.validar()) return;
 
     let data = {

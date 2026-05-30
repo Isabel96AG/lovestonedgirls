@@ -20,7 +20,6 @@ export class ShopComponent implements OnInit {
   busqueda: string = '';
   categoriaSeleccionada: any = '';
 
-  // criterio de ordenación seleccionado por el usuario
   ordenar: string = '';
 
   constructor(
@@ -29,12 +28,10 @@ export class ShopComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // cargo las categorías para los botones de filtro
     this.ecommerceService.getHome().subscribe((resp: any) => {
       this.categorias = resp.categories;
     });
 
-    // leo los queryParams directamente (ahora siempre vienen con categorie_id)
     this.route.queryParams.subscribe(params => {
       this.categoriaSeleccionada = params['categorie_id'] || '';
       this.busqueda = params['search'] || '';
@@ -46,18 +43,14 @@ export class ShopComponent implements OnInit {
     this.ecommerceService.getProducts(this.paginaActual, this.busqueda, this.categoriaSeleccionada).subscribe((resp: any) => {
       this.productos = resp.products;
       this.total = resp.total;
-      // aplicamos el orden actual después de cargar los productos
       this.aplicarOrden();
     });
   }
 
-  // ordena el array de productos según la opción elegida en el select
   aplicarOrden() {
     if (this.ordenar === 'precio-asc') {
-      // de menor a mayor precio — creamos un array nuevo para que Angular detecte el cambio
       this.productos = [...this.productos].sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
     } else if (this.ordenar === 'precio-desc') {
-      // de mayor a menor precio
       this.productos = [...this.productos].sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
     }
   }

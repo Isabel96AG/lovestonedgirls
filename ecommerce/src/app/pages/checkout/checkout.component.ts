@@ -18,15 +18,10 @@ const STRIPE_PUBLIC_KEY = 'pk_test_51TVYzsEPvGrMiyxDxs0JgZf4X5KBUPIBcGQtvsc0tNDX
 })
 export class CheckoutComponent implements OnInit, AfterViewInit {
 
-  // items del carrito que se van a comprar
   items: any[] = [];
   cargando: boolean = true;
   procesando: boolean = false;
-
-  // método de pago seleccionado
   metodoPago: string = 'tarjeta';
-
-  // datos del formulario de envío
   nombre: string = '';
   apellidos: string = '';
   telefono: string = '';
@@ -36,15 +31,9 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   codigoPostal: string = '';
   pais: string = 'España';
   notas: string = '';
-
-  // errores de validación del formulario
   errores: any = {};
-
-  // objetos de Stripe que usaremos para procesar el pago
   stripe: Stripe | null = null;
   cardElement: StripeCardElement | null = null;
-
-  // indica si el campo de tarjeta ya está listo para usarse
   cardLista: boolean = false;
 
   constructor(
@@ -55,12 +44,10 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    // cargamos los productos del carrito al entrar en checkout
     this.cartService.getCarts().subscribe({
       next: (resp: any) => {
         this.items = resp.carts;
         this.cargando = false;
-        // si el carrito está vacío no tiene sentido estar aquí
         if (this.items.length === 0) {
           this.router.navigate(['/cart']);
         }
@@ -73,11 +60,9 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   async ngAfterViewInit() {
-    // cargamos Stripe con nuestra clave publicable
     this.stripe = await loadStripe(STRIPE_PUBLIC_KEY);
     if (!this.stripe) return;
 
-    // creamos los Elements de Stripe — son los campos de tarjeta seguros
     const elements = this.stripe.elements();
 
     this.cardElement = elements.create('card', {
@@ -91,27 +76,21 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       hidePostalCode: true
     });
 
-    // pequeño delay para asegurarnos de que Angular ha terminado de renderizar el div
     setTimeout(() => {
       this.cardElement!.mount('#card-element');
-
-      // esperamos al evento ready — hasta que no se emita no usamos el campo
       this.cardElement!.on('ready', () => {
         this.cardLista = true;
       });
     }, 100);
   }
 
-  // calculamos el total sumando todos los items
   get total(): number {
     return this.items.reduce((acc, i) => acc + parseFloat(i.total), 0);
   }
 
-  // validación antes de enviar el pedido
   validarFormulario(): boolean {
     this.errores = {};
 
-    // nombre y apellidos — mínimo 2 caracteres
     if (!this.nombre.trim()) {
       this.errores.nombre = 'El nombre es obligatorio';
     } else if (this.nombre.trim().length < 2) {
@@ -124,7 +103,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       this.errores.apellidos = 'Los apellidos deben tener al menos 2 caracteres';
     }
 
-    // teléfono — exactamente 9 dígitos numéricos
     if (!this.telefono.trim()) {
       this.errores.telefono = 'El teléfono es obligatorio';
     } else {
@@ -134,17 +112,14 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       }
     }
 
-    // dirección — no puede estar vacía
     if (!this.direccion.trim()) {
       this.errores.direccion = 'La dirección es obligatoria';
     }
 
-    // ciudad — no puede estar vacía
     if (!this.ciudad.trim()) {
       this.errores.ciudad = 'La ciudad es obligatoria';
     }
 
-    // código postal — exactamente 5 dígitos (formato español)
     if (!this.codigoPostal.trim()) {
       this.errores.codigoPostal = 'El código postal es obligatorio';
     } else {
@@ -154,11 +129,9 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       }
     }
 
-    // si no hay errores el formulario es válido
     return Object.keys(this.errores).length === 0;
   }
 
-  // enviar el pedido al backend
   async confirmarPedido() {
     if (!this.validarFormulario()) {
       this.toastr.warning('Revisa los campos obligatorios', 'Formulario incompleto');
@@ -180,7 +153,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       notes:          this.notas,
     };
 
-    // si el método es tarjeta pedimos a Stripe el payment_method_id
     if (this.metodoPago === 'tarjeta') {
       if (!this.stripe || !this.cardElement || !this.cardLista) {
         this.toastr.error('El campo de tarjeta aún no está listo, espera un momento', 'Error');
@@ -188,29 +160,24 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      // Stripe recoge los datos de la tarjeta y nos devuelve un id seguro
       const { paymentMethod, error } = await this.stripe.createPaymentMethod({
         type: 'card',
         card: this.cardElement,
       });
 
       if (error) {
-        // mostramos el mensaje de error de Stripe (tarjeta inválida, etc.)
         this.toastr.error(error.message, 'Error de pago');
         this.procesando = false;
         return;
       }
 
-      // añadimos el id del método de pago para enviarlo a Laravel
       datos.payment_method_id = paymentMethod.id;
     }
 
     this.saleService.createSale(datos).subscribe({
       next: (resp: any) => {
-        // vaciamos el contador del header
         this.cartService.setTotalItems(0);
         this.toastr.success('Tu pedido se ha realizado correctamente', '¡Gracias por tu compra!');
-        // redirigimos a la confirmación pasando el id del pedido
         this.router.navigate(['/order-confirmation', resp.sale.id]);
         this.procesando = false;
       },

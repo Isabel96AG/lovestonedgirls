@@ -62,7 +62,6 @@ export class ProductComponent implements OnInit {
     this.cartService.addCart(data).subscribe({
       next: (resp: any) => {
         this.toastr.success('Producto añadido al carrito', '¡Listo!');
-        // actualizar el contador del header
         this.cartService.getCarts().subscribe((r: any) => {
           this.cartService.setTotalItems(r.carts.length);
         });
