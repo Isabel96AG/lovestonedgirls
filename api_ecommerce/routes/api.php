@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'auth'
 ], function ($router) {
-    Route::post('/register', [AuthController::class, 'register'])->middleware('auth:api')->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login_ecommerce', [AuthController::class, 'login_ecommerce'])->name('login_ecommerce');
     Route::post('/verified_auth', [AuthController::class, 'verified_auth'])->name('verified_auth');
