@@ -61,14 +61,12 @@ Route::group([
     Route::delete("admins/{id}", [AdminUserController::class, "destroy"]);
 });
 
-// rutas publicas de la tienda
 Route::prefix('ecommerce')->group(function () {
     Route::get('home', [HomeController::class, 'home']);
     Route::get('categories', [HomeController::class, 'categories']);
     Route::get('products', [HomeController::class, 'products']);
     Route::get('product/{slug}', [HomeController::class, 'show']);
 
-    // carrito — requiere login
     Route::middleware('auth:api')->group(function () {
         Route::get('carts', [CartController::class, 'index']);
         Route::post('carts', [CartController::class, 'store']);
@@ -76,7 +74,6 @@ Route::prefix('ecommerce')->group(function () {
         Route::delete('carts/delete_all', [CartController::class, 'deleteAll']);
         Route::delete('carts/{id}', [CartController::class, 'destroy']);
 
-        // pedidos — crear, listar y ver detalle
         Route::get('sales', [SaleController::class, 'index']);
         Route::post('sales', [SaleController::class, 'store']);
         Route::get('sales/{id}', [SaleController::class, 'show']);
