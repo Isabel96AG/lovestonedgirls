@@ -72,7 +72,6 @@ export class EditProductComponent implements OnInit {
             (c: any) => c.categorie_second_id == this.categorie_second_id
           );
 
-          // precargar variaciones seleccionadas
           if (p.variations) {
             p.variations.forEach((v: any) => {
               this.selectedVariations[v.attribute_id] = v.propertie_id + '';

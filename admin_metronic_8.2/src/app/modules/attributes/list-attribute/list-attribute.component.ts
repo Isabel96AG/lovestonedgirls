@@ -29,18 +29,15 @@ export class ListAttributeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.listAttributes();  // Cargar todas al inicio
+    this.listAttributes();
     this.isLoading$ = this.attributesService.isLoading$;
 
-    // Configurar debounce para búsqueda en tiempo real
     this.searchSubject.pipe(
-      debounceTime(300) // espera 300ms después de dejar de escribir
+      debounceTime(300)
     ).subscribe(value => {
       if (value.trim() === '') {
-        // Si está vacío, mostrar todas las categorías
         this.listAttributes(1);
       } else {
-        // Si hay texto, filtrar
         this.listAttributes(1);
       }
     });
@@ -49,7 +46,7 @@ export class ListAttributeComponent implements OnInit {
   openModalCreateAttribute() {
     const modalRef = this.modalService.open(CreateAttributeComponent, { centered: true, size: 'md' });
     modalRef.componentInstance.AttributeC.subscribe((attributes: any) => {
-      this.attributes.unshift(attributes); // Agregar el nuevo atributo al principio();
+      this.attributes.unshift(attributes);
     });
   }
 
@@ -81,7 +78,6 @@ export class ListAttributeComponent implements OnInit {
     modalRef.componentInstance.attribute = attribute;
 
     modalRef.componentInstance.AttributeE.subscribe((attributes: any) => {
-      // this.attributes.unshift(attributes); // Agregar el nuevo atributo al principio();
       let INDEX = this.attributes.findIndex((item: any) => item.id == attributes.id);
       if (INDEX != -1) {
         this.attributes[INDEX] = attributes;
@@ -111,7 +107,6 @@ export class ListAttributeComponent implements OnInit {
     const modalRef = this.modalService.open(DeleteAttributeComponent, { centered: true, size: 'md' });
     modalRef.componentInstance.attribute = attribute;
 
-    // Suscribirse al evento del modal cuando confirme eliminación
     modalRef.componentInstance.AttributeD.subscribe((attribute: any) => {
       let INDEX = this.attributes.findIndex((item: any) => item.id == attribute.id);
       if (INDEX != -1) {

@@ -21,10 +21,8 @@ export class EstadisticsService {
     this.isLoading$ = this.isLoadingSubject.asObservable();
   }
 
-  // llama al endpoint que devuelve todos los datos del dashboard de una vez
   getEstadistics() {
     this.isLoadingSubject.next(true);
-    // leemos el token directamente de localStorage para asegurarnos de que está disponible
     let token = localStorage.getItem('token');
     let headers = new HttpHeaders({ 'Authorization': 'Bearer ' + token });
     let URL = URL_SERVICIOS + '/admin/estadistics';
